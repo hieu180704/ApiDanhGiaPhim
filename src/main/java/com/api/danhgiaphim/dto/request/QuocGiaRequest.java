@@ -1,6 +1,6 @@
 package com.api.danhgiaphim.dto.request;
 
-public class QuocGiaCreationRequest {
+public class QuocGiaRequest {
 
     private String tenQuocGia;
 
