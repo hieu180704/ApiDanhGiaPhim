@@ -1,6 +1,6 @@
 package com.api.danhgiaphim.service;
 
-import com.api.danhgiaphim.dto.request.QuocGiaCreationRequest;
+import com.api.danhgiaphim.dto.request.QuocGiaRequest;
 import com.api.danhgiaphim.entity.QuocGia;
 import com.api.danhgiaphim.repository.QuocGiaRepository;
 import java.util.List;
@@ -13,7 +13,7 @@ public class QuocGiaService {
     @Autowired
     private QuocGiaRepository quocGiaRepository;
 
-    public QuocGia createQuocGia(QuocGiaCreationRequest request) {
+    public QuocGia createQuocGia(QuocGiaRequest request) {
         QuocGia quocGiaEntity = new QuocGia();
         quocGiaEntity.setTenQuocGia(request.getTenQuocGia());
 
@@ -32,7 +32,7 @@ public class QuocGiaService {
         return quocGiaRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia"));
     }
     
-    public QuocGia updateQuocGia(Integer id,QuocGiaCreationRequest request){
+    public QuocGia updateQuocGia(Integer id,QuocGiaRequest request){
         QuocGia quocGia = getQuocGia(id);
         quocGia.setTenQuocGia(request.getTenQuocGia());
         

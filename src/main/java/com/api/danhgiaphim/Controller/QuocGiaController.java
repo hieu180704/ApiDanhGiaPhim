@@ -1,6 +1,6 @@
 package com.api.danhgiaphim.Controller;
 
-import com.api.danhgiaphim.dto.request.QuocGiaCreationRequest;
+import com.api.danhgiaphim.dto.request.QuocGiaRequest;
 import com.api.danhgiaphim.entity.QuocGia;
 import com.api.danhgiaphim.service.QuocGiaService;
 import java.util.List;
@@ -22,7 +22,7 @@ public class QuocGiaController {
     private QuocGiaService quocGiaService;
 
     @PostMapping
-    QuocGia createQuocGia(@RequestBody QuocGiaCreationRequest request) {
+    QuocGia createQuocGia(@RequestBody QuocGiaRequest request) {
         return quocGiaService.createQuocGia(request);
     }
 
@@ -42,7 +42,7 @@ public class QuocGiaController {
     }
     
     @PutMapping("/{maQuocGia}")
-    QuocGia updateQuocGia(@PathVariable("maQuocGia") Integer maQuocGia, @RequestBody QuocGiaCreationRequest request){
+    QuocGia updateQuocGia(@PathVariable("maQuocGia") Integer maQuocGia, @RequestBody QuocGiaRequest request){
         return quocGiaService.updateQuocGia(maQuocGia, request);
     }
     

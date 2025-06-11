@@ -10,14 +10,14 @@ public class QuocGia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int maQuocGia;
+    private Integer maQuocGia;
     private String tenQuocGia;
 
-    public int getMaQuocGia() {
+    public Integer getMaQuocGia() {
         return maQuocGia;
     }
 
-    public void setMaQuocGia(int maQuocGia) {
+    public void setMaQuocGia(Integer maQuocGia) {
         this.maQuocGia = maQuocGia;
     }
 
