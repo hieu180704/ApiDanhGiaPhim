@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.api.danhgiaphim.dto.request;
+
 import com.api.danhgiaphim.entity.QuocGia;
 import java.time.LocalDate;
-/**
- *
- * @author ntnfa
- */
-
 
 public class DaoDienRequest {
     private String anhDaoDien;
