@@ -30,7 +30,7 @@ public class PhimService {
         phimRepository.deleteById(maPhim);
     }
 
-    // Logic tùy chỉnh: Cập nhật rating dựa trên số lượt review (ví dụ)
+    // Cập nhật rating dựa trên số lượt review 
     public void updateRating(String maPhim, Float newRating) {
         Optional<Phim> phimOpt = findById(maPhim);
         phimOpt.ifPresent(phim -> {

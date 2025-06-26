@@ -12,12 +12,11 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
-public class DaoDien {
+public class DaoDien { 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maDaoDien;
-
     private String anhDaoDien;
     private String tenDaoDien;
     private LocalDate ngaySinh;

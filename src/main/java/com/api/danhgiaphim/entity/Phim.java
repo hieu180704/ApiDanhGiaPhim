@@ -1,6 +1,7 @@
 package com.api.danhgiaphim.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -63,23 +64,4 @@ public class Phim {
 
     public DaoDien getDaoDien() { return daoDien; }
     public void setDaoDien(DaoDien daoDien) { this.daoDien = daoDien; }
-}
-
-// Entity cho DaoDien (cần thiết cho khóa ngoại)
-@Entity
-@Table(name = "DaoDien")
-class DaoDien {
-    @Id
-    @Column(name = "maDaoDien")
-    private String maDaoDien;
-
-    @Column(name = "tenDaoDien")
-    private String tenDaoDien;
-
-    // Getters và Setters
-    public String getMaDaoDien() { return maDaoDien; }
-    public void setMaDaoDien(String maDaoDien) { this.maDaoDien = maDaoDien; }
-
-    public String getTenDaoDien() { return tenDaoDien; }
-    public void setTenDaoDien(String tenDaoDien) { this.tenDaoDien = tenDaoDien; }
 }

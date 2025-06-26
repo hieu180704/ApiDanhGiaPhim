@@ -6,20 +6,20 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class DienVienPhimId implements Serializable {
-
-    @Column(name = "maDienVien")
-    private Integer maDienVien;
+public class TheLoaiPhimId implements Serializable {
 
     @Column(name = "maPhim")
     private String maPhim;
 
-    // Default constructor
-    public DienVienPhimId() {}
+    @Column(name = "maTheLoai")
+    private Integer maTheLoai;
 
-    public DienVienPhimId(Integer maDienVien, String maPhim) {
-        this.maDienVien = maDienVien;
+    // Default constructor
+    public TheLoaiPhimId() {}
+
+    public TheLoaiPhimId(String maPhim, Integer maTheLoai) {
         this.maPhim = maPhim;
+        this.maTheLoai = maTheLoai;
     }
 
     // Equals và HashCode
@@ -27,22 +27,22 @@ public class DienVienPhimId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DienVienPhimId that = (DienVienPhimId) o;
-        return Objects.equals(maDienVien, that.maDienVien) &&
-                Objects.equals(maPhim, that.maPhim);
+        TheLoaiPhimId that = (TheLoaiPhimId) o;
+        return Objects.equals(maPhim, that.maPhim) &&
+                Objects.equals(maTheLoai, that.maTheLoai);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(maDienVien, maPhim);
+        return Objects.hash(maPhim, maTheLoai);
     }
 
     // Getters và Setters
-    public Integer getMaDienVien() { return maDienVien; }
-    public void setMaDienVien(Integer maDienVien) { this.maDienVien = maDienVien; }
-
     public String getMaPhim() { return maPhim; }
     public void setMaPhim(String maPhim) { this.maPhim = maPhim; }
+
+    public Integer getMaTheLoai() { return maTheLoai; }
+    public void setMaTheLoai(Integer maTheLoai) { this.maTheLoai = maTheLoai; }
 
     private static final long serialVersionUID = 1L;
 }
