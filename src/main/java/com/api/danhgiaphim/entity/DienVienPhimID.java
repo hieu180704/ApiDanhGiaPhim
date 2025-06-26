@@ -44,5 +44,5 @@ public class DienVienPhimId implements Serializable {
     public String getMaPhim() { return maPhim; }
     public void setMaPhim(String maPhim) { this.maPhim = maPhim; }
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; // Thêm serialVersionUID
 }
