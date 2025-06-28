@@ -47,13 +47,11 @@ public class DaoDienRequest {
         this.ngaySinh = ngaySinh;
     }
 
-    public Integer getQuocGiaId() {
+    public Integer getMaQuocGia() {
         return maQuocGia;
     }
 
-    public void setQuocGiaId(Integer quocGiaId) {
-        this.maQuocGia = quocGiaId;
-    }
-
-    
+    public void setMaQuocGia(Integer maQuocGia) {
+        this.maQuocGia = maQuocGia;
+    } 
 }

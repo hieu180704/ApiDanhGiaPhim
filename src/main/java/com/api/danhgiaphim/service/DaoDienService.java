@@ -34,8 +34,8 @@ public class DaoDienService {
             throw new DuplicateResourceException("Tên đạo diễn đã tồn tại");
         }
 
-        QuocGia quocGia = quocGiaRepository.findById(request.getQuocGiaId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getQuocGiaId()));
+        QuocGia quocGia = quocGiaRepository.findById(request.getMaQuocGia())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getMaQuocGia()));
 
         DaoDien daoDien = new DaoDien();
         daoDien.setTenDaoDien(request.getTenDaoDien());
@@ -54,8 +54,8 @@ public class DaoDienService {
             throw new DuplicateResourceException("Tên đạo diễn đã tồn tại");
         }
 
-        QuocGia quocGia = quocGiaRepository.findById(request.getQuocGiaId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getQuocGiaId()));
+        QuocGia quocGia = quocGiaRepository.findById(request.getMaQuocGia())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getMaQuocGia()));
 
         daoDien.setTenDaoDien(request.getTenDaoDien());
         daoDien.setAnhDaoDien(request.getAnhDaoDien());
