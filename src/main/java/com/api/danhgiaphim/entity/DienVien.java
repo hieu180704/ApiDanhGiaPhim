@@ -8,8 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class DienVien {
@@ -23,9 +25,13 @@ public class DienVien {
     private LocalDate ngaySinh;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ma_quoc_gia", nullable = false,foreignKey = @ForeignKey(name = "fk_dienvien_quocgia"))
-    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+    @JoinColumn(name = "ma_quoc_gia", nullable = false, foreignKey = @ForeignKey(name = "fk_dienvien_quocgia"))
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private QuocGia quocGia;
+
+    @ManyToMany(mappedBy = "dienViens")
+    @JsonIgnoreProperties("dienViens")
+    private List<Phim> phims;
 
     public Integer getMaDienVien() {
         return maDienVien;
@@ -66,6 +72,12 @@ public class DienVien {
     public void setQuocGia(QuocGia quocGia) {
         this.quocGia = quocGia;
     }
-    
-    
+
+    public List<Phim> getPhims() {
+        return phims;
+    }
+
+    public void setPhims(List<Phim> phims) {
+        this.phims = phims;
+    }
 }

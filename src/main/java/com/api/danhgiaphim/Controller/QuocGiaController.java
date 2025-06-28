@@ -1,10 +1,13 @@
 package com.api.danhgiaphim.Controller;
 
+import com.api.danhgiaphim.dto.request.ApiResponse;
 import com.api.danhgiaphim.dto.request.QuocGiaRequest;
 import com.api.danhgiaphim.entity.QuocGia;
 import com.api.danhgiaphim.service.QuocGiaService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,33 +25,32 @@ public class QuocGiaController {
     private QuocGiaService quocGiaService;
 
     @PostMapping
-    QuocGia createQuocGia(@RequestBody QuocGiaRequest request) {
-        return quocGiaService.createQuocGia(request);
-    }
-
-    @PostMapping("/add")
-    public List<QuocGia> addQuocGias(@RequestBody List<QuocGia> QuocGia) {
-        return quocGiaService.saveAllQuocGias(QuocGia);
+    public ResponseEntity<ApiResponse<QuocGia>> createQuocGia(@Valid @RequestBody QuocGiaRequest request) {
+        QuocGia created = quocGiaService.createQuocGia(request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Tạo quốc gia thành công", created));
     }
 
     @GetMapping
-    List<QuocGia> getQuocGia() {
-        return quocGiaService.getQuocGias();
+    public ResponseEntity<ApiResponse<List<QuocGia>>> getAllQuocGias() {
+        List<QuocGia> list = quocGiaService.getQuocGias();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách quốc gia thành công", list));
     }
-    
-    @GetMapping("/{maQuocGia}")
-    QuocGia getQuocGia(@PathVariable("maQuocGia") Integer maQuocGia){
-        return quocGiaService.getQuocGia(maQuocGia);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<QuocGia>> getQuocGia(@PathVariable Integer id) {
+        QuocGia qg = quocGiaService.getQuocGia(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy quốc gia thành công", qg));
     }
-    
-    @PutMapping("/{maQuocGia}")
-    QuocGia updateQuocGia(@PathVariable("maQuocGia") Integer maQuocGia, @RequestBody QuocGiaRequest request){
-        return quocGiaService.updateQuocGia(maQuocGia, request);
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<QuocGia>> updateQuocGia(@PathVariable Integer id,@Valid @RequestBody QuocGiaRequest request) {
+        QuocGia updated = quocGiaService.updateQuocGia(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Cập nhật quốc gia thành công", updated));
     }
-    
-    @DeleteMapping("/{maQuocGia}")
-    String deleteQuocGia(@PathVariable("maQuocGia") Integer maQuocGia){
-        quocGiaService.deleteQuocGia(maQuocGia);
-        return "Đã Xoá Quốc Gia";
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteQuocGia(@PathVariable Integer id) {
+        quocGiaService.deleteQuocGia(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Xoá quốc gia thành công", "OK"));
     }
 }

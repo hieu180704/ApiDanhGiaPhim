@@ -1,15 +1,15 @@
 package com.api.danhgiaphim.Controller;
 
+import com.api.danhgiaphim.dto.request.ApiResponse;
 import com.api.danhgiaphim.dto.request.PhimRequest;
-import com.api.danhgiaphim.entity.DaoDien;
 import com.api.danhgiaphim.entity.Phim;
 import com.api.danhgiaphim.service.PhimService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/phims")
@@ -18,57 +18,33 @@ public class PhimController {
     @Autowired
     private PhimService phimService;
 
-    @GetMapping
-    public List<Phim> getAllPhim() {
-        return phimService.findAll();
-    }
-
-    @GetMapping("/{maPhim}")
-    public ResponseEntity<Phim> getPhimById(@PathVariable String maPhim) {
-        return phimService.findById(maPhim)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public ResponseEntity<Phim> createPhim(@Valid @RequestBody PhimRequest phimRequest) {
-        Phim phim = new Phim();
-        phim.setTieuDe(phimRequest.getTieuDe());
-        phim.setPoster(phimRequest.getPoster());
-        phim.setThoiLuong(phimRequest.getThoiLuong());
-        phim.setNgayPhatHanh(phimRequest.getNgayPhatHanh());
-        phim.setMoTa(phimRequest.getMoTa());
-        // Gán khóa ngoại
-        DaoDien daoDien = new DaoDien();
-        daoDien.setMaDaoDien(phimRequest.getMaDaoDien());
-        phim.setDaoDien(daoDien);
-
-        Phim savedPhim = phimService.savePhim(phim);
-        return ResponseEntity.ok(savedPhim);
+    public ResponseEntity<ApiResponse<Phim>> createPhim(@RequestBody @Valid PhimRequest request) {
+        Phim phim = phimService.createPhim(request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Tạo phim thành công", phim));
     }
 
-    @PutMapping("/{maPhim}")
-    public ResponseEntity<Phim> updatePhim(@PathVariable String maPhim, @Valid @RequestBody PhimRequest phimRequest) {
-        return phimService.findById(maPhim)
-                .map(phim -> {
-                    phim.setTieuDe(phimRequest.getTieuDe());
-                    phim.setPoster(phimRequest.getPoster());
-                    phim.setThoiLuong(phimRequest.getThoiLuong());
-                    phim.setNgayPhatHanh(phimRequest.getNgayPhatHanh());
-                    phim.setMoTa(phimRequest.getMoTa());
-                    DaoDien daoDien = new DaoDien();
-                    daoDien.setMaDaoDien(phimRequest.getMaDaoDien());
-                    phim.setDaoDien(daoDien);
-                    return ResponseEntity.ok(phimService.savePhim(phim));
-                }).orElse(ResponseEntity.notFound().build());
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Phim>>> getPhims() {
+        List<Phim> ds = phimService.getPhims();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách phim thành công", ds));
     }
 
-    @DeleteMapping("/{maPhim}")
-    public ResponseEntity<Void> deletePhim(@PathVariable String maPhim) {
-        if (phimService.findById(maPhim).isPresent()) {
-            phimService.deleteById(maPhim);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Phim>> getPhimById(@PathVariable Integer id) {
+        Phim phim = phimService.getPhimById(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy phim thành công", phim));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Phim>> updatePhim(@PathVariable @Valid Integer id, @RequestBody PhimRequest request) {
+        Phim phim = phimService.updatePhim(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Cập nhật phim thành công", phim));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deletePhim(@PathVariable Integer id) {
+        phimService.deletePhim(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Xóa phim thành công", null));
     }
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DaoDienRepository extends JpaRepository<DaoDien, Integer> {
+    boolean existsByTenDaoDienIgnoreCase(String tenDaoDien);
 }

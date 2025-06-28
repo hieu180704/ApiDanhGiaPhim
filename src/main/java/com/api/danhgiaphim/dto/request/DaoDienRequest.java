@@ -1,13 +1,27 @@
 package com.api.danhgiaphim.dto.request;
 
-import com.api.danhgiaphim.entity.QuocGia;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class DaoDienRequest {
+
     private String anhDaoDien;
+
+    @NotBlank(message = "Tên đạo diễn không được để trống")
+    @Size(max = 50, message = "Tên đạo diễn không được vượt quá 50 ký tự")
+    @Pattern(regexp = "^[^\\d]*$", message = "Tên đạo diễn không được chứa số")
     private String tenDaoDien;
+    
+    @NotNull(message = "Ngày sinh không được để trống")
+    @Past(message = "Ngày sinh phải là ngày trong quá khứ")    
     private LocalDate ngaySinh;
-    private QuocGia quocGia;
+    
+    @NotNull(message = "Mã quốc gia không được để trống")
+    private Integer maQuocGia;
 
     public String getAnhDaoDien() {
         return anhDaoDien;
@@ -33,11 +47,13 @@ public class DaoDienRequest {
         this.ngaySinh = ngaySinh;
     }
 
-    public QuocGia getQuocGia() {
-        return quocGia;
+    public Integer getQuocGiaId() {
+        return maQuocGia;
     }
 
-    public void setQuocGia(QuocGia quocGia) {
-        this.quocGia = quocGia;
+    public void setQuocGiaId(Integer quocGiaId) {
+        this.maQuocGia = quocGiaId;
     }
+
+    
 }

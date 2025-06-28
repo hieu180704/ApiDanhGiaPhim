@@ -1,18 +1,15 @@
 package com.api.danhgiaphim.Controller;
 
+import com.api.danhgiaphim.dto.request.ApiResponse;
 import com.api.danhgiaphim.dto.request.DaoDienRequest;
 import com.api.danhgiaphim.entity.DaoDien;
 import com.api.danhgiaphim.service.DaoDienService;
-import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/daodiens")
@@ -22,28 +19,34 @@ public class DaoDienController {
     private DaoDienService daoDienService;
 
     @GetMapping
-    public List<DaoDien> selectDaoDien() {
-        return daoDienService.getDaoDiens();
+    public ResponseEntity<ApiResponse<List<DaoDien>>> selectDaoDien() {
+        return ResponseEntity.ok(
+            new ApiResponse<>(200, "Lấy danh sách đạo diễn thành công", daoDienService.getDaoDiens())
+        );
     }
 
     @PostMapping
-    DaoDien createDaoDien(@RequestBody DaoDienRequest request) {
-        return daoDienService.createDaoDien(request);
+    public ResponseEntity<ApiResponse<DaoDien>> createDaoDien(@Valid @RequestBody DaoDienRequest request) {
+        DaoDien created = daoDienService.createDaoDien(request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Tạo đạo diễn thành công", created));
     }
 
     @GetMapping("/{maDaoDien}")
-    DaoDien selectDaoDienById(@PathVariable("maDaoDien") Integer maDaoDien) {
-        return daoDienService.getDaoDien(maDaoDien);
+    public ResponseEntity<ApiResponse<DaoDien>> selectDaoDienById(@PathVariable Integer maDaoDien) {
+        DaoDien found = daoDienService.getDaoDien(maDaoDien);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy đạo diễn thành công", found));
     }
 
     @PutMapping("/{maDaoDien}")
-    DaoDien updateDaoDien(@PathVariable("maDaoDien") Integer maDaoDien, @RequestBody DaoDienRequest request) {
-        return daoDienService.updateDaoDien(maDaoDien, request);
+    public ResponseEntity<ApiResponse<DaoDien>> updateDaoDien(@PathVariable Integer maDaoDien,
+                                                              @Valid @RequestBody DaoDienRequest request) {
+        DaoDien updated = daoDienService.updateDaoDien(maDaoDien, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Cập nhật đạo diễn thành công", updated));
     }
 
     @DeleteMapping("/{maDaoDien}")
-    String xoaDaoDien(@PathVariable("maDaoDien") Integer maDaoDien) {
+    public ResponseEntity<ApiResponse<String>> xoaDaoDien(@PathVariable Integer maDaoDien) {
         daoDienService.deleteDaoDien(maDaoDien);
-        return "Đã Xoá Đạo Diễn";
+        return ResponseEntity.ok(new ApiResponse<>(200, "Xoá đạo diễn thành công", "OK"));
     }
 }

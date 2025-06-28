@@ -2,7 +2,11 @@ package com.api.danhgiaphim.service;
 
 import com.api.danhgiaphim.dto.request.DienVienRequest;
 import com.api.danhgiaphim.entity.DienVien;
+import com.api.danhgiaphim.entity.QuocGia;
+import com.api.danhgiaphim.exception.DuplicateResourceException;
 import com.api.danhgiaphim.repository.DienVienRepository;
+import com.api.danhgiaphim.repository.QuocGiaRepository;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,35 +17,58 @@ public class DienVienService {
     @Autowired
     private DienVienRepository dienVienRepository;
 
+    @Autowired
+    private QuocGiaRepository quocGiaRepository;
+
     public List<DienVien> getDienViens() {
         return dienVienRepository.findAll();
     }
 
     public DienVien getDienVien(Integer id) {
-        return dienVienRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy diễn viên"));
+        return dienVienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy diễn viên với mã: " + id));
     }
 
-    public DienVien createDienVien(DienVienRequest request) {
+    public DienVien createDienVien(@Valid DienVienRequest request) {
+        if (dienVienRepository.existsByTenDienVienIgnoreCase(request.getTenDienVien())) {
+            throw new DuplicateResourceException("Tên diễn viên đã tồn tại");
+        }
+
+        QuocGia quocGia = quocGiaRepository.findById(request.getQuocGiaId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getQuocGiaId()));
+
         DienVien dienVien = new DienVien();
         dienVien.setTenDienVien(request.getTenDienVien());
         dienVien.setAnhDienVien(request.getAnhDienVien());
         dienVien.setNgaySinh(request.getNgaySinh());
-        dienVien.setQuocGia(request.getQuocGia());
+        dienVien.setQuocGia(quocGia);
 
         return dienVienRepository.save(dienVien);
     }
 
-    public DienVien updateDienVien(Integer id, DienVienRequest request) {
+    public DienVien updateDienVien(Integer id, @Valid DienVienRequest request) {
         DienVien dienVien = getDienVien(id);
+
+        if (!dienVien.getTenDienVien().equalsIgnoreCase(request.getTenDienVien())
+                && dienVienRepository.existsByTenDienVienIgnoreCase(request.getTenDienVien())) {
+            throw new DuplicateResourceException("Tên diễn viên đã tồn tại");
+        }
+
+        QuocGia quocGia = quocGiaRepository.findById(request.getQuocGiaId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quốc gia với mã: " + request.getQuocGiaId()));
+
         dienVien.setTenDienVien(request.getTenDienVien());
         dienVien.setAnhDienVien(request.getAnhDienVien());
         dienVien.setNgaySinh(request.getNgaySinh());
-        dienVien.setQuocGia(request.getQuocGia());
+        dienVien.setQuocGia(quocGia);
 
         return dienVienRepository.save(dienVien);
     }
 
     public void deleteDienVien(Integer id) {
+        if (!dienVienRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy diễn viên để xoá, mã: " + id);
+        }
         dienVienRepository.deleteById(id);
     }
 }

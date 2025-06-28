@@ -1,10 +1,9 @@
 package com.api.danhgiaphim.repository;
 
-import com.api.danhgiaphim.entity.Phim;
+import com.api.danhgiaphim.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PhimRepository extends JpaRepository<Phim, Integer> {
-    boolean existsByTieuDeIgnoreCase(String tieuDe);
+public interface ReviewRepository extends JpaRepository<Review, Integer> {
 }
