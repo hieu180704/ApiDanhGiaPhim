@@ -1,67 +1,128 @@
 package com.api.danhgiaphim.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Table(name = "Phim")
 public class Phim {
 
     @Id
-    @Column(name = "maPhim")
-    private String maPhim;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer maPhim;
 
-    @Column(name = "tieuDe")
     private String tieuDe;
-
-    @Column(name = "poster")
     private String poster;
-
-    @Column(name = "thoiLuong")
     private Integer thoiLuong;
-
-    @Column(name = "ngayPhatHanh")
     private LocalDate ngayPhatHanh;
-
-    @Column(name = "moTa")
     private String moTa;
+    private Double overallRating;
 
-    @Column(name = "overallRating")
-    private Float overallRating;
-
-    @Column(name = "soLuotReview")
-    private Integer soLuotReview;
-
-    @ManyToOne
-    @JoinColumn(name = "maDaoDien", referencedColumnName = "maDaoDien")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maDaoDien", referencedColumnName = "maDaoDien", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private DaoDien daoDien;
 
-    // Getters và Setters
-    public String getMaPhim() { return maPhim; }
-    public void setMaPhim(String maPhim) { this.maPhim = maPhim; }
+    @ManyToMany
+    @JoinTable(
+            name = "phim_dien_vien",
+            joinColumns = @JoinColumn(name = "ma_phim"),
+            inverseJoinColumns = @JoinColumn(name = "ma_dien_vien")
+    )
+    @JsonIgnoreProperties("phims") 
+    private List<DienVien> dienViens;
 
-    public String getTieuDe() { return tieuDe; }
-    public void setTieuDe(String tieuDe) { this.tieuDe = tieuDe; }
+    @ManyToMany
+    @JoinTable(
+            name = "phim_the_loai",
+            joinColumns = @JoinColumn(name = "ma_phim"),
+            inverseJoinColumns = @JoinColumn(name = "ma_the_loai")
+    )
+    @JsonIgnoreProperties("phims")   
+    private List<TheLoai> theLoais;
 
-    public String getPoster() { return poster; }
-    public void setPoster(String poster) { this.poster = poster; }
 
-    public Integer getThoiLuong() { return thoiLuong; }
-    public void setThoiLuong(Integer thoiLuong) { this.thoiLuong = thoiLuong; }
+    // Getters & Setters
+    public Integer getMaPhim() {
+        return maPhim;
+    }
 
-    public LocalDate getNgayPhatHanh() { return ngayPhatHanh; }
-    public void setNgayPhatHanh(LocalDate ngayPhatHanh) { this.ngayPhatHanh = ngayPhatHanh; }
+    public void setMaPhim(Integer maPhim) {
+        this.maPhim = maPhim;
+    }
 
-    public String getMoTa() { return moTa; }
-    public void setMoTa(String moTa) { this.moTa = moTa; }
+    public String getTieuDe() {
+        return tieuDe;
+    }
 
-    public Float getOverallRating() { return overallRating; }
-    public void setOverallRating(Float overallRating) { this.overallRating = overallRating; }
+    public void setTieuDe(String tieuDe) {
+        this.tieuDe = tieuDe;
+    }
 
-    public Integer getSoLuotReview() { return soLuotReview; }
-    public void setSoLuotReview(Integer soLuotReview) { this.soLuotReview = soLuotReview; }
+    public String getPoster() {
+        return poster;
+    }
 
-    public DaoDien getDaoDien() { return daoDien; }
-    public void setDaoDien(DaoDien daoDien) { this.daoDien = daoDien; }
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public Integer getThoiLuong() {
+        return thoiLuong;
+    }
+
+    public void setThoiLuong(Integer thoiLuong) {
+        this.thoiLuong = thoiLuong;
+    }
+
+    public LocalDate getNgayPhatHanh() {
+        return ngayPhatHanh;
+    }
+
+    public void setNgayPhatHanh(LocalDate ngayPhatHanh) {
+        this.ngayPhatHanh = ngayPhatHanh;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public Double getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(Double overallRating) {
+        this.overallRating = overallRating;
+    }
+
+    public DaoDien getDaoDien() {
+        return daoDien;
+    }
+
+    public void setDaoDien(DaoDien daoDien) {
+        this.daoDien = daoDien;
+    }
+
+    public List<DienVien> getDienViens() {
+        return dienViens;
+    }
+
+    public void setDienViens(List<DienVien> dienViens) {
+        this.dienViens = dienViens;
+    }
+
+    public List<TheLoai> getTheLoais() {
+        return theLoais;
+    }
+
+    public void setTheLoais(List<TheLoai> theLoais) {
+        this.theLoais = theLoais;
+    }
+    
+    
 }

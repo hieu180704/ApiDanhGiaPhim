@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuocGiaRepository extends JpaRepository<QuocGia, Integer>{
-    
+    boolean existsByTenQuocGiaIgnoreCase(String tenQuocGia);
 }
