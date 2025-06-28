@@ -4,18 +4,13 @@ import com.api.danhgiaphim.dto.request.ApiResponse;
 import com.api.danhgiaphim.dto.request.UserRequest;
 import com.api.danhgiaphim.entity.User;
 import com.api.danhgiaphim.service.UserService;
-import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -28,39 +23,40 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping
-    public ApiResponse<User> createUser(@RequestBody UserRequest request) {
-        ApiResponse<User> apiRespone = new ApiResponse<>();
-        apiRespone.setResult(userService.createUser(request));
-        return apiRespone;
+    public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody UserRequest request) {
+        User user = userService.createUser(request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Tạo người dùng thành công", user));
     }
 
     @GetMapping
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<ApiResponse<List<User>>> getUsers() {
+        List<User> ds = userService.getUsers();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách người dùng thành công", ds));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<User> getUser(@PathVariable("id") Integer id) {
-        ApiResponse<User> apiRespone = new ApiResponse<>();
-        apiRespone.setResult(userService.getUser(id));
-        return apiRespone;
+    public ResponseEntity<ApiResponse<User>> getUser(@PathVariable("id") Integer id) {
+        User user = userService.getUser(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy người dùng thành công", user));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable("id") Integer id, @RequestBody UserRequest request) {
-        return userService.updateUser(id, request);
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable("id") Integer id, @Valid @RequestBody UserRequest request) {
+        User user = userService.updateUser(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Cập nhật người dùng thành công", user));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
-        return "Đã xoá người dùng";
+        return ResponseEntity.ok(new ApiResponse<>(200, "Xóa người dùng thành công", null));
     }
 
     @GetMapping("/test-password")
-    public String testPassword(@RequestParam String username, @RequestParam String rawPassword) {
-        User user = userService.getUserByUsername(username); // bạn cần thêm hàm này
+    public ResponseEntity<ApiResponse<String>> testPassword(@RequestParam String username, @RequestParam String rawPassword) {
+        User user = userService.getUserByUsername(username);
         boolean match = passwordEncoder.matches(rawPassword, user.getPassword());
-        return match ? "Mật khẩu đúng" : "Mật khẩu sai";
+        String result = match ? "Mật khẩu đúng" : "Mật khẩu sai";
+        return ResponseEntity.ok(new ApiResponse<>(200, "Kiểm tra mật khẩu thành công", result));
     }
 }

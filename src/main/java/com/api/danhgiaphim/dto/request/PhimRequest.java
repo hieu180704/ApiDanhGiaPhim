@@ -34,7 +34,7 @@ public class PhimRequest {
     private Integer maDaoDien; // giữ nguyên là ID để truyền vào dễ dàng
     
     @NotEmpty(message = "Phim phải có ít nhất 1 thể loại")
-        private List<Integer> maTheLoaiList;
+    private List<Integer> maTheLoaiList;
     
     @NotEmpty(message = "Phim phải có ít nhất 1 diễn viên")
     private List<Integer> maDienVienList;
