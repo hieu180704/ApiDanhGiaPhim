@@ -1,7 +1,9 @@
 package com.api.danhgiaphim.Controller;
 
 import com.api.danhgiaphim.dto.request.ApiResponse;
+import com.api.danhgiaphim.dto.request.ChangePasswordRequest;
 import com.api.danhgiaphim.dto.request.ForgotPasswordRequest;
+import com.api.danhgiaphim.dto.request.LoginRequest;
 import com.api.danhgiaphim.dto.request.ResetPasswordRequest;
 import com.api.danhgiaphim.entity.PasswordResetToken;
 import com.api.danhgiaphim.entity.User;
@@ -81,4 +83,38 @@ public class AuthController {
 
         return new ApiResponse<>(200, "Đổi mật khẩu thành công", null);
     }
+
+    @PostMapping("/login")
+    public ApiResponse<?> login(@RequestBody LoginRequest request) {
+        User user = userRepo.findAll().stream()
+                .filter(u -> u.getUsername().equalsIgnoreCase(request.getUsername()))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return new ApiResponse<>(401, "Tên đăng nhập hoặc mật khẩu không đúng", null);
+        }
+
+        return new ApiResponse<>(200, "Đăng nhập thành công", user);
+    }
+
+    @PostMapping("/change-password")
+    public ApiResponse<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        User user = userRepo.findById(request.getId()).orElse(null);
+
+        if (user == null) {
+            return new ApiResponse<>(404, "Không tìm thấy người dùng với ID: " + request.getId(), null);
+        }
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            return new ApiResponse<>(400, "Mật khẩu cũ không đúng", null);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepo.save(user);
+
+        return new ApiResponse<>(200, "Đổi mật khẩu thành công", null);
+    }
+
 }
