@@ -89,14 +89,19 @@ public class PhimService {
     }
 
     public void updateOverallRating(Integer phimId) {
+        // 1. Gọi phương thức vừa tạo trong repository để lấy điểm trung bình
         Double newRating = reviewRepo.calculateAverageRatingByPhimId(phimId);
 
+        // 2. Lấy đối tượng phim cần cập nhật
         Phim phimToUpdate = getPhimById(phimId);
 
+        // 3. Cập nhật và lưu lại
         if (newRating != null) {
+            // Làm tròn đến 1 chữ số thập phân
             double roundedRating = Math.round(newRating * 10.0) / 10.0;
             phimToUpdate.setOverallRating(roundedRating);
         } else {
+            // Nếu phim chưa có đánh giá nào, trả về 0
             phimToUpdate.setOverallRating(0.0);
         }
 
