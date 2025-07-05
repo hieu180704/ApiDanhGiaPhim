@@ -1,5 +1,7 @@
 package com.api.danhgiaphim.service;
 
+import com.api.danhgiaphim.dto.request.CreateUserRequest;
+import com.api.danhgiaphim.dto.request.UpdateUserProfileRequest;
 import com.api.danhgiaphim.dto.request.UserRequest;
 import com.api.danhgiaphim.entity.User;
 import com.api.danhgiaphim.repository.UserRepository;
@@ -19,7 +21,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-    public User createUser(@Valid UserRequest request) {
+    public User createUser(@Valid CreateUserRequest request) {
         if (userRepo.existsByUsernameIgnoreCase(request.getUsername())) {
             throw new RuntimeException("Tên tài khoản đã tồn tại");
         }
@@ -50,29 +52,15 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với mã: " + id));
     }
 
-    public User updateUser(Integer id, @Valid UserRequest request) {
-        User user = getUser(id);
+    public User updateUser(Integer id, @Valid UpdateUserProfileRequest request) {
+        User existingUser = getUser(id);
+        
+        existingUser.setFullName(request.getFullName());
+        existingUser.setPhone(request.getPhone());
 
-        if (!user.getUsername().equalsIgnoreCase(request.getUsername())
-                && userRepo.existsByUsernameIgnoreCase(request.getUsername())) {
-            throw new RuntimeException("Tên tài khoản đã tồn tại");
-        }
+        existingUser.setUpdatedAt(LocalDateTime.now());
 
-        if (!user.getEmail().equalsIgnoreCase(request.getEmail())
-                && userRepo.existsByEmailIgnoreCase(request.getEmail())) {
-            throw new RuntimeException("Email đã tồn tại!");
-        }
-
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        user.setFullName(request.getFullName());
-        user.setPhone(request.getPhone());
-        user.setRole(request.getRole());
-        user.setStatus(request.isStatus());
-        user.setUpdatedAt(LocalDateTime.now());
-
-        return userRepo.save(user);
+        return userRepo.save(existingUser);
     }
 
     public void deleteUser(Integer id) {

@@ -6,6 +6,7 @@ import com.api.danhgiaphim.entity.Phim;
 import com.api.danhgiaphim.repository.DaoDienRepository;
 import com.api.danhgiaphim.repository.DienVienRepository;
 import com.api.danhgiaphim.repository.PhimRepository;
+import com.api.danhgiaphim.repository.ReviewRepository;
 import com.api.danhgiaphim.repository.TheLoaiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class PhimService {
     private TheLoaiRepository theLoaiRepo;
     @Autowired
     private DienVienRepository dienVienRepo;
+    @Autowired
+    private ReviewRepository reviewRepo;
 
     public Phim createPhim(PhimRequest request) {
         if (phimRepo.existsByTieuDeIgnoreCase(request.getTieuDe())) {
@@ -74,7 +77,6 @@ public class PhimService {
         phim.setThoiLuong(req.getThoiLuong());
         phim.setNgayPhatHanh(req.getNgayPhatHanh());
         phim.setMoTa(req.getMoTa());
-        phim.setOverallRating(req.getOverallRating());
         phim.setDaoDien(daoDien);
 
         if (req.getMaDienVienList() != null) {
@@ -84,5 +86,20 @@ public class PhimService {
         if (req.getMaTheLoaiList() != null) {
             phim.setTheLoais(theLoaiRepo.findAllById(req.getMaTheLoaiList()));
         }
+    }
+
+    public void updateOverallRating(Integer phimId) {
+        Double newRating = reviewRepo.calculateAverageRatingByPhimId(phimId);
+
+        Phim phimToUpdate = getPhimById(phimId);
+
+        if (newRating != null) {
+            double roundedRating = Math.round(newRating * 10.0) / 10.0;
+            phimToUpdate.setOverallRating(roundedRating);
+        } else {
+            phimToUpdate.setOverallRating(0.0);
+        }
+
+        phimRepo.save(phimToUpdate);
     }
 }

@@ -2,7 +2,9 @@ package com.api.danhgiaphim.service;
 
 import com.api.danhgiaphim.dto.request.ReviewRequest;
 import com.api.danhgiaphim.entity.*;
+import com.api.danhgiaphim.exception.DuplicateResourceException;
 import com.api.danhgiaphim.repository.*;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +22,32 @@ public class ReviewService {
     @Autowired
     private UserRepository usersRepository;
 
-    public Review createReview(ReviewRequest request) {
-        Phim phim = phimRepository.findById(request.getMaPhim())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy phim"));
+    @Autowired
+    private PhimService phimService;
 
-        User taiKhoan = usersRepository.findById(request.getMaTaiKhoan())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
+    public Review createReview(ReviewRequest request) {
+
+        if (reviewRepository.existsByPhim_MaPhimAndTaiKhoan_Id(request.getMaPhim(), request.getMaTaiKhoan())) {
+            throw new DuplicateResourceException("Tài khoản này đã đánh giá phim này.");
+        }
+
+        Phim phim = phimRepository.findById(request.getMaPhim())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy phim với mã: " + request.getMaPhim()));
+
+        User user = usersRepository.findById(request.getMaTaiKhoan())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản với mã: " + request.getMaTaiKhoan()));
 
         Review review = new Review();
         review.setPhim(phim);
-        review.setTaiKhoan(taiKhoan);
+        review.setTaiKhoan(user);
         review.setRating(request.getRating());
         review.setComment(request.getComment());
-        review.setNgayReview(request.getNgayReview());
+        review.setNgayReview(request.getNgayReview() != null ? request.getNgayReview() : LocalDate.now());
 
-        return reviewRepository.save(review);
+        Review savedReview = reviewRepository.save(review);
+        phimService.updateOverallRating(savedReview.getPhim().getMaPhim());
+
+        return savedReview;
     }
 
     public List<Review> getAllReviews() {
@@ -61,10 +74,21 @@ public class ReviewService {
         review.setComment(request.getComment());
         review.setNgayReview(request.getNgayReview());
 
-        return reviewRepository.save(review);
+        Review updatedReview = reviewRepository.save(review);
+        phimService.updateOverallRating(updatedReview.getPhim().getMaPhim());
+
+        return updatedReview;
     }
 
     public void deleteReview(Integer id) {
+        Review reviewToDelete = getReviewById(id);
+        Integer phimId = reviewToDelete.getPhim().getMaPhim();
+        
+        if (!reviewRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm đánh giá để xoá");
+        }
         reviewRepository.deleteById(id);
+        phimService.updateOverallRating(phimId);
     }
+
 }
