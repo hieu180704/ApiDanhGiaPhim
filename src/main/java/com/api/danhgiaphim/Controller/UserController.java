@@ -1,7 +1,8 @@
 package com.api.danhgiaphim.Controller;
 
 import com.api.danhgiaphim.dto.request.ApiResponse;
-import com.api.danhgiaphim.dto.request.UserRequest;
+import com.api.danhgiaphim.dto.request.CreateUserRequest;
+import com.api.danhgiaphim.dto.request.UpdateUserProfileRequest;
 import com.api.danhgiaphim.entity.User;
 import com.api.danhgiaphim.service.UserService;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody CreateUserRequest request) {
         User user = userService.createUser(request);
         return ResponseEntity.ok(new ApiResponse<>(200, "Tạo người dùng thành công", user));
     }
@@ -41,7 +42,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable("id") Integer id, @Valid @RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable("id") Integer id,
+                                                        @Valid @RequestBody UpdateUserProfileRequest request) {
         User user = userService.updateUser(id, request);
         return ResponseEntity.ok(new ApiResponse<>(200, "Cập nhật người dùng thành công", user));
     }
@@ -53,7 +55,8 @@ public class UserController {
     }
 
     @GetMapping("/test-password")
-    public ResponseEntity<ApiResponse<String>> testPassword(@RequestParam String username, @RequestParam String rawPassword) {
+    public ResponseEntity<ApiResponse<String>> testPassword(@RequestParam String username,
+                                                            @RequestParam String rawPassword) {
         User user = userService.getUserByUsername(username);
         boolean match = passwordEncoder.matches(rawPassword, user.getPassword());
         String result = match ? "Mật khẩu đúng" : "Mật khẩu sai";

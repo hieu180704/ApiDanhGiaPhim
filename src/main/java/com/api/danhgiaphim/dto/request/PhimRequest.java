@@ -1,7 +1,5 @@
 package com.api.danhgiaphim.dto.request;
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,10 +23,6 @@ public class PhimRequest {
 
     @Size(max = 1000, message = "Mô tả không được quá 1000 ký tự")
     private String moTa;
-
-    @DecimalMin(value = "0.0", message = "Rating không hợp lệ")
-    @DecimalMax(value = "10.0", message = "Rating không hợp lệ")
-    private Double overallRating;
 
     @NotNull(message = "Phim phải có đạo diễn")
     private Integer maDaoDien; // giữ nguyên là ID để truyền vào dễ dàng
@@ -79,15 +73,7 @@ public class PhimRequest {
     public void setMoTa(String moTa) {
         this.moTa = moTa;
     }
-
-    public Double getOverallRating() {
-        return overallRating;
-    }
-
-    public void setOverallRating(Double overallRating) {
-        this.overallRating = overallRating;
-    }
-
+    
     public Integer getMaDaoDien() {
         return maDaoDien;
     }
